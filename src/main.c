@@ -4,6 +4,15 @@
 #define NOB_IMPLEMENTATION
 #include "../nob.h"
 
+size_t sv_count_characters(const Nob_String_View* sv, char c) {
+    size_t total = 0;
+    for (size_t i = 0; i < sv->count; ++i) {
+        char svc = sv->data[i];
+        if (svc == c) total++;
+    }
+    return total;
+}
+
 int main(int argc, char** argv) {
     const char* programName = nob_shift_args(&argc, &argv);
     NOB_UNUSED(programName);
@@ -31,8 +40,13 @@ int main(int argc, char** argv) {
     Nob_String_View line = {0};
     for (size_t i = 0; i < lineCount; ++i) {
         line = nob_sv_chop_by_delim(&workingSv, '\n');
-        printf("[LINE]: %.*s\n", (int)line.count, line.data);
+        size_t valueCount = sv_count_characters(&line, ',') + 1;
 
+        printf("LINE: %zu\n", i);
+        for (size_t j = 0; j < valueCount; ++j) {
+            Nob_String_View value = nob_sv_chop_by_delim(&line, ',');
+            printf("[VALUE]: %.*s\n", (int)value.count, value.data);
+        }
     }
 
     return 0;
