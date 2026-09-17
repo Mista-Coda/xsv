@@ -54,9 +54,9 @@ int main(int argc, char** argv) {
         }
     }
 
-    for (size_t i = 0; i < 256; ++i) {
-        for (size_t j = 0; j < 256; ++j) {
-            Nob_String_View value = data.values[j][i];
+    for (size_t row = 0; row < 256; ++row) {
+        for (size_t col = 0; col < 256; ++col) {
+            Nob_String_View value = data.values[col][row];
             if (value.count == 0) continue;
             printf("%.*s\n", (int)value.count, value.data);
         }
