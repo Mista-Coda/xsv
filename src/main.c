@@ -6,7 +6,12 @@
 
 typedef struct {
     Nob_String_View values[256][256];
+    size_t rowCount, colCount;
 } Csv;
+
+char num_to_char(size_t num) {
+    return 'A' + num;
+}
 
 size_t sv_count_characters(const Nob_String_View* sv, char c) {
     size_t total = 0;
@@ -44,9 +49,11 @@ int main(int argc, char** argv) {
     Nob_String_View line = {0};
     Csv data = {0};
 
+    data.rowCount = lineCount;
     for (size_t row = 0; row < lineCount; ++row) {
         line = nob_sv_chop_by_delim(&workingSv, '\n');
         size_t valueCount = sv_count_characters(&line, ',') + 1;
+        data.colCount = valueCount;
 
         for (size_t col = 0; col < valueCount; ++col) {
             Nob_String_View value = nob_sv_chop_by_delim(&line, ',');
@@ -54,12 +61,23 @@ int main(int argc, char** argv) {
         }
     }
 
-    for (size_t row = 0; row < 256; ++row) {
-        for (size_t col = 0; col < 256; ++col) {
-            Nob_String_View value = data.values[col][row];
-            if (value.count == 0) continue;
-            printf("%.*s\n", (int)value.count, value.data);
-        }
+    printf("%zu x %zu\n", data.rowCount, data.colCount);
+
+    printf("       ");
+
+    for (size_t col = 0; col < data.colCount; ++col) {
+        printf("[  %c  ] ", num_to_char(col));
+    }
+    printf("\n");
+
+    for (size_t col = 0; col < data.colCount; ++col) {
+            printf("[  %c  ] ", num_to_char(col));
+            for (size_t row = 0; row < data.rowCount; ++row) {
+                Nob_String_View value = data.values[col][row];
+                if (value.count == 0) continue;
+                printf("%.*s ", (int)value.count, value.data);
+            }
+        printf("\n");
     }
 
     return 0;
